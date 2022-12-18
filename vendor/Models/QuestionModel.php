@@ -32,6 +32,11 @@ class QuestionModel extends Model
         return $this->db->query($sql)->fetchAll(PDO::FETCH_OBJ);
     }
 
+    public function getRandomQuest(int $user_id) :int
+    {
+        $sql = "select id from questions where user_id  = {$user_id} ORDER BY RANDOM() LIMIT 1";
+        return $this->db->query($sql)->fetchObject()->id;
+    }
     public function save(string $text, string $status, string $user_id) : object
     {
         $sql = "insert into questions (text, published, date, user_id) values ('{$text}', {$status}, now(), {$user_id}) returning id";
