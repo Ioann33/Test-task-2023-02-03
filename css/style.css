@@ -1,0 +1,23 @@
+.button{
+    display: flex;
+}
+.button form{
+    margin: 5px;
+}
+.box{
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.box>div{
+
+}
+.mr{
+    margin-right: 10px;
+}
+.list-style{
+    display: flex;
+    justify-content: space-between;
+}
