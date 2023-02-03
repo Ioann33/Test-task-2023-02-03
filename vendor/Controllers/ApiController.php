@@ -47,8 +47,8 @@ class ApiController
             http_response_code(422);
             exit();
         }
+        $message[] = 'Successful registration, congratulation!';
         $message[] = "{$_POST['name']} {$_POST['l_name']}";
-        $message[] = 'Successful registration';
         LogService::addLog($message);
         echo json_encode($message);
         http_response_code(200);
