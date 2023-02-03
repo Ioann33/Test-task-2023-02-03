@@ -5,6 +5,6 @@ class LogService
 {
     static public function addLog(array $massages): void
     {
-        file_put_contents('storages/logs/logs.txt', date('[Y-m-d H:i:s] ') . print_r($massages, true) . PHP_EOL, FILE_APPEND);
+        file_put_contents('logs.txt', date('[Y-m-d H:i:s] ') . print_r($massages, true) . PHP_EOL, FILE_APPEND);
     }
 }
