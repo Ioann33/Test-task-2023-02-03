@@ -2,28 +2,36 @@
 
 namespace Models;
 
-class UserModel extends Model
+class UserModel
 {
-    /**
-     * @param $email
-     * @param $pass
-     * @return false|mixed|object|\stdClass|null
-     */
-    public function create($email, $pass){
-        $sql = "insert into users (email, password) values ('$email', '$pass') returning id";
-        return $this->db->query($sql)->fetchObject();
+    public function getUsers(): array
+    {
+        return [
+            [
+                'id' => 1,
+                'name' => 'Alex Bit',
+                'email' => 'alex@gmail.com'
+            ],
+            [
+                'id' => 2,
+                'name' => 'Ioann Kar',
+                'email' => 'ioann@gmail.com'
+            ],
+            [
+                'id' => 3,
+                'name' => 'Jon Jonovich',
+                'email' => 'jon@gmail.com'
+            ],
+        ];
     }
 
-    /**
-     * @param $email
-     * @return false|mixed|object|\stdClass|null
-     */
-    public function getUserByEmailOrAndPass($email, $pass = ''){
-        $sql = "select * from users where email = '$email'";
-        if (!empty($pass)){
-            $sql .= " and password = '{$pass}'";
+    public function getUserByEmail(string $email): bool
+    {
+        foreach ($this->getUsers() as $user){
+            if ($user['email'] === $email){
+                return true;
+            }
         }
-        return $this->db->query($sql)->fetchObject();
+        return false;
     }
-
 }

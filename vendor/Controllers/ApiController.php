@@ -2,63 +2,50 @@
 
 namespace Controllers;
 
-use Facade\Auth;
-use Models\QuestionModel;
+
 use Models\UserModel;
-use Services\Service;
 
 class ApiController
 {
-    public function auth() : void
+    private UserModel $userModel;
+
+    public function __construct()
     {
-        $pass = md5($_POST['pass']);
-        $userModel = new UserModel();
-        $res = $userModel->getUserByEmailOrAndPass($_POST['email'], $pass);
-        if (!$res){
-            echo "Credentials didn't match!";
+        $this->userModel = new UserModel();
+    }
+
+    public function save(): void
+    {
+        $errors = [];
+
+        if (!isset($_POST['email']) || !isset($_POST['pass']) || !isset($_POST['passConf'])){
+            $errors[]="All fields must be filled!";
+            echo json_encode($errors);
             http_response_code(422);
             exit();
         }
 
-        $_SESSION['MY_TOKEN'] = hash('ripemd160', $_POST['email']);
-        $_SESSION['auth_user'] = $res->id;
-        echo json_encode(['my_token'=>$_SESSION['MY_TOKEN']]);
-    }
+        if (!preg_match("/^[a-z0-9.]*@[a-z0-9.]*$/i", $_POST['email'])){
+            $errors[] = "Email must be contain chart @";
+        }
 
-    public function logauth(){
-        unset($_SESSION['MY_TOKEN']);
-        unset($_SESSION['auth_user']);
-        echo 'ok';
-    }
+        if ($_POST['pass'] != $_POST['passConf']){
+            $errors[] = "Didn't match password confirmation";
+        }
 
-    public function getRandomQuest(): void
-    {
-        if (!isset($_SESSION['MY_TOKEN']) || $_SESSION['MY_TOKEN'] != $_SERVER['HTTP_MY_TOKEN']){
-            echo "Unauthorized !";
+        $res = $this->userModel->getUserByEmail($_POST['email']);
+
+        if ($res){
+            $errors[] = "This email already been taken";
+        }
+
+        if (count($errors)>0){
+            echo json_encode($errors);
             http_response_code(422);
             exit();
         }
-        $model = new QuestionModel();
-        $random_quest_id = $model->getRandomQuest(Auth::User());
-        $question = $model->getQuestionById($random_quest_id);
-        $resArr = [];
-
-        $tmp = Service::arrayCovert($question);
-        $tmp = array_shift($tmp);
-        $resArr['quest'] = $tmp['text'];
-
-        foreach ($tmp['answers'] as $item){
-            $resArr['answers'][] = $item['answer'].' : '.$item['voices'];
-        }
-
-        echo json_encode($resArr);
-    }
-
-    public function getQuestById()
-    {
-        $model = new QuestionModel();
-        $quest_id = $_GET['quest_id'];
-        $question = $model->getQuestionById($quest_id);
-        echo json_encode(Service::arrayCovert($question));
+        $message[] = 'Successful registration';
+        echo json_encode($message);
+        http_response_code(200);
     }
 }

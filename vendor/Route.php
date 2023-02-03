@@ -32,15 +32,10 @@ class Route
             exit($e->getMessage());
         }
 
-
-
-
-
     }
 
     static public function notFound(){
         http_response_code(404);
-        //TODO pretty view for 404 status
         exit();
     }
 
@@ -59,45 +54,4 @@ class Route
         }
     }
 
-    /**
-     * redirect to URL
-     * @param string $url
-     */
-    static public function redirect(string $url): void
-    {
-        header("Location: $url");
-        exit();
-    }
-
-    /**
-     * set errors to the session
-     * @param array $errors
-     */
-    static public function addErrors(array $errors): void
-    {
-        $_SESSION['errors'] = $errors;
-    }
-
-    /**
-     * @param array $message
-     * @return void
-     */
-    static public function addMessage(array $message): void
-    {
-        $_SESSION['message'] = $message;
-    }
-
-    /**
-     * get errors from session
-     * @return array
-     */
-    static public function getErrors() : array
-    {
-        $errors = [];
-        if (isset($_SESSION['errors'])){
-            $errors = $_SESSION['errors'];
-            unset($_SESSION['errors']);
-        }
-        return $errors;
-    }
 }
