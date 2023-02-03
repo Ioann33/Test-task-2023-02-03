@@ -4,6 +4,8 @@ namespace Controllers;
 
 
 use Models\UserModel;
+use Services\LogService;
+
 
 class ApiController
 {
@@ -40,11 +42,14 @@ class ApiController
         }
 
         if (count($errors)>0){
+            LogService::addLog($errors);
             echo json_encode($errors);
             http_response_code(422);
             exit();
         }
+        $message[] = "{$_POST['name']} {$_POST['l_name']}";
         $message[] = 'Successful registration';
+        LogService::addLog($message);
         echo json_encode($message);
         http_response_code(200);
     }
